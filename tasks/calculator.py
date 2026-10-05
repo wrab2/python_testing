@@ -18,14 +18,30 @@ def power(a, b):
     return math.pow(a, b)
 
 def calculator():
+    from service import CalculatorService
+    calc = CalculatorService()
     print("операции: +, -, *, /, ^")
-    print("для выхода введите 'q'")
+    print("выход: 'q', история: 'h' ")
 
     while True:
-        op = input("\nвведите операцию (+, -, *, /, ^) или 'q': ").strip()
+        op = input("\nвведите операцию (+, -, *, /, ^), выход: 'q', история: 'h': ").strip()
 
         if op == 'q':
             break
+
+        if op == 'h':
+            records = calc.history.get_all()
+            if not records:
+                print("история пуста")
+            else:
+                for i, r in enumerate(records, 1):
+                    print(f"{i}. {r['a']} {r['operation']} {r['b']} = {r['result']}")
+            continue
+
+        if op == 'c':
+            calc.clear_history()
+            print("история очищена")
+            continue
 
         if op not in ('+', '-', '*', '/', '^'):
             print("Неверная операция. Попробуйте снова.")
@@ -38,16 +54,7 @@ def calculator():
             print("Ошибка: нужно ввести число.")
             continue
 
-        if op == '+':
-            result = add(a, b)
-        elif op == '-':
-            result = subtract(a, b)
-        elif op == '*':
-            result = multiply(a, b)
-        elif op == '/':
-            result = divide(a, b)        
-        elif op == '^':
-            result = power(a, b)
+        result = calc.calculate(op, a, b)
 
         print(f"Результат: {result}")
 
